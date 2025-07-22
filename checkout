@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paddle Checkout Example</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for the Inter font and basic body layout */
+        body {
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column; /* Allow content to stack vertically */
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f4f8; /* Light gray background */
+            margin: 0;
+            padding: 1rem; /* Add some padding for smaller screens */
+        }
+        .container {
+            max-width: 500px;
+            width: 100%;
+        }
+        /* Style for the inline checkout container */
+        #inline-checkout-container {
+            width: 100%;
+            max-width: 600px; /* Adjust as needed */
+            height: 500px; /* Adjust as needed */
+            margin-top: 2rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            overflow: hidden; /* Ensure content stays within bounds */
+        }
+    </style>
+</head>
+<body>
+    <div class="container bg-white p-8 rounded-lg shadow-xl text-center">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">Welcome to Our Product!</h1>
+        <p class="text-gray-600 mb-8">
+            Choose your preferred checkout experience below.
+        </p>
+
+        <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
+            <!-- Button to trigger the Paddle overlay checkout -->
+            <button id="overlay-checkout-button"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">
+                Open Overlay Checkout
+            </button>
+
+            <!-- Button to trigger the Paddle inline checkout -->
+            <button id="inline-checkout-button"
+                    class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-75">
+                Open Inline Checkout
+            </button>
+        </div>
+
+        <!-- Container for the inline checkout, initially hidden -->
+        <div id="inline-checkout-container" class="hidden"></div>
+
+        <!-- Message box for any alerts or information (replaces alert()) -->
+        <div id="message-box" class="hidden mt-6 p-4 bg-red-100 text-red-700 rounded-lg border border-red-200" role="alert">
+            <p id="message-text"></p>
+        </div>
+    </div>
+
+    <!-- Paddle.js script -->
+    <script src="https://cdn.paddle.com/paddle/paddle.js"></script>
+    <script>
+        // Function to show a custom message instead of alert()
+        function showMessage(message, type = 'error') {
+            const messageBox = document.getElementById('message-box');
+            const messageText = document.getElementById('message-text');
+            messageText.textContent = message;
+            messageBox.className = `mt-6 p-4 rounded-lg border ${type === 'error' ? 'bg-red-100 text-red-700 border-red-200' : 'bg-green-100 text-green-700 border-green-200'}`;
+            messageBox.classList.remove('hidden');
+        }
+
+        // Placeholder values for Paddle IDs - REMEMBER TO CHANGE THESE!
+        // If you don't replace these, the checkout will not work.
+        const YOUR_PADDLE_VENDOR_ID = 0; // Replace with your actual Vendor ID
+        const YOUR_PADDLE_PRODUCT_ID = 0; // Replace with your actual Product ID
+
+        // Wait for the window to load before initializing Paddle
+        window.onload = function() {
+            // Basic check to remind the user to update IDs
+            if (YOUR_PADDLE_VENDOR_ID === 0 || YOUR_PADDLE_PRODUCT_ID === 0) {
+                showMessage("Please replace 'YOUR_PADDLE_VENDOR_ID' and 'YOUR_PADDLE_PRODUCT_ID' in the script with your actual Paddle IDs for the checkout to work.", 'error');
+                return; // Stop execution if IDs are not set
+            }
+
+            // Initialize Paddle.js
+            // IMPORTANT: Replace 'YOUR_PADDLE_VENDOR_ID' with your actual Paddle Vendor ID.
+            // You can find this in your Paddle Dashboard under 'Developer Tools' -> 'Authentication'.
+            Paddle.Setup({ vendor: YOUR_PADDLE_VENDOR_ID }); // Example: 12345
+
+            // Get the checkout button elements
+            const overlayCheckoutButton = document.getElementById('overlay-checkout-button');
+            const inlineCheckoutButton = document.getElementById('inline-checkout-button');
+            const inlineCheckoutContainer = document.getElementById('inline-checkout-container');
+
+            // Add a click event listener for the overlay checkout button
+            overlayCheckoutButton.addEventListener('click', function() {
+                // Hide inline container if it was visible
+                inlineCheckoutContainer.classList.add('hidden');
+                // Open the Paddle checkout overlay
+                Paddle.Checkout.open({
+                    product: YOUR_PADDLE_PRODUCT_ID, // Example: 67890
+                    // successCallback: function(data) {
+                    //     showMessage('Overlay purchase successful! Thank you.', 'success');
+                    //     console.log('Overlay Checkout success:', data);
+                    // },
+                    // closeCallback: function() {
+                    //     showMessage('Overlay checkout closed. You can try again.', 'info');
+                    //     console.log('Overlay Checkout closed.');
+                    // }
+                });
+            });
+
+            // Add a click event listener for the inline checkout button
+            inlineCheckoutButton.addEventListener('click', function() {
+                // Show the inline container
+                inlineCheckoutContainer.classList.remove('hidden');
+                // Open the Paddle inline checkout
+                Paddle.Checkout.inline('inline-checkout-container', {
+                    product: YOUR_PADDLE_PRODUCT_ID, // Example: 67890
+                    // successCallback: function(data) {
+                    //     showMessage('Inline purchase successful! Thank you.', 'success');
+                    //     console.log('Inline Checkout success:', data);
+                    // },
+                    // closeCallback: function() {
+                    //     showMessage('Inline checkout closed. You can try again.', 'info');
+                    //     console.log('Inline Checkout closed.');
+                    // }
+                });
+            });
+        };
+    </script>
+</body>
+</html>
