@@ -65,8 +65,8 @@
         </div>
     </div>
 
-    <!-- Paddle.js script -->
-    <script src="https://cdn.paddle.com/paddle/paddle.js"></script>
+    <!-- Paddle.js script - NOW USING V2 SPECIFIC CDN -->
+    <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
     <script>
         // Function to show a custom message instead of alert()
         function showMessage(message, type = 'error') {
@@ -77,10 +77,9 @@
             messageBox.classList.remove('hidden');
         }
 
-        // IMPORTANT: For Paddle Billing (v2), you should use a Client-Side Token, not a Vendor ID.
-        // Replace 'YOUR_PADDLE_CLIENT_SIDE_TOKEN' with your actual Client-Side Token.
-        // You can generate this in your Paddle Dashboard under 'Developer Tools' -> 'Authentication'.
-        const YOUR_PADDLE_CLIENT_SIDE_TOKEN = 'test_09f26cb8061bd63e13d1d0aa5fb'; // Updated with your provided client-side token
+        // IMPORTANT: For Paddle Billing (v2), you should use a Client-Side Token.
+        // This token is safe to expose in your client-side code.
+        const YOUR_PADDLE_CLIENT_SIDE_TOKEN = 'test_09f26cb8061bd63e13d1d0aa5fb';
 
         // This is your Price ID from Paddle Billing.
         const YOUR_PADDLE_PRICE_ID = 'pri_01hj3zmf49m7cc3fvbpvst4kqj';
@@ -94,6 +93,7 @@
             }
 
             // Initialize Paddle.js with your Client-Side Token
+            // Ensure this is called only once.
             Paddle.Setup({ token: YOUR_PADDLE_CLIENT_SIDE_TOKEN });
 
             // Get the checkout button elements
@@ -102,7 +102,7 @@
             const inlineCheckoutContainer = document.getElementById('inline-checkout-container');
 
             // Common checkout parameters for both overlay and inline
-            const checkoutParams = {
+            const commonCheckoutParams = {
                 items: [
                     {
                         priceId: YOUR_PADDLE_PRICE_ID,
@@ -124,18 +124,23 @@
                 // Hide inline container if it was visible
                 inlineCheckoutContainer.classList.add('hidden');
                 // Open the Paddle checkout overlay
-                Paddle.Checkout.open(checkoutParams);
+                Paddle.Checkout.open(commonCheckoutParams);
             });
 
             // Add a click event listener for the inline checkout button
             inlineCheckoutButton.addEventListener('click', function() {
                 // Show the inline container
                 inlineCheckoutContainer.classList.remove('hidden');
-                // Open the Paddle inline checkout
-                Paddle.Checkout.inline('inline-checkout-container', checkoutParams);
+
+                // For inline checkout in Paddle Billing (v2), use Paddle.Checkout.open
+                // with 'target' and 'pw-inline' parameters.
+                Paddle.Checkout.open({
+                    ...commonCheckoutParams, // Spread common parameters
+                    target: 'inline-checkout-container', // ID of the HTML element to embed the checkout into
+                    'pw-inline': true // Required for inline mode
+                });
             });
         };
     </script>
 </body>
 </html>
-
