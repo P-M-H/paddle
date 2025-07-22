@@ -91,11 +91,13 @@
         // Wait for the window to load before initializing Paddle
         window.onload = function() {
             // Basic check to remind the user to update IDs
-            // This check will now only warn if the token is still the generic placeholder.
             if (YOUR_PADDLE_CLIENT_SIDE_TOKEN === 'YOUR_PADDLE_CLIENT_SIDE_TOKEN') {
                 showMessage("Please replace 'YOUR_PADDLE_CLIENT_SIDE_TOKEN' with your actual token for the checkout to work.", 'error');
                 return; // Stop execution if token is not set
             }
+
+            // Explicitly set the environment to sandbox when using a sandbox token
+            Paddle.Environment.set('sandbox');
 
             // Initialize Paddle.js with your Client-Side Token
             // Ensure this is called only once.
