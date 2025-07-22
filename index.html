@@ -77,44 +77,54 @@
             messageBox.classList.remove('hidden');
         }
 
-        // Placeholder values for Paddle IDs - REMEMBER TO CHANGE THESE!
-        // If you don't replace these, the checkout will not work.
-        const YOUR_PADDLE_VENDOR_ID = 16598; // Replaced with your actual Vendor ID
-        const YOUR_PADDLE_PRODUCT_ID = 'pri_01hj3zmf49m7cc3fvbpvst4kqj'; // Replaced with your actual Product ID (now a price ID)
+        // IMPORTANT: For Paddle Billing (v2), you should use a Client-Side Token, not a Vendor ID.
+        // Replace 'YOUR_PADDLE_CLIENT_SIDE_TOKEN' with your actual Client-Side Token.
+        // You can generate this in your Paddle Dashboard under 'Developer Tools' -> 'Authentication'.
+        const YOUR_PADDLE_CLIENT_SIDE_TOKEN = 'test_09f26cb8061bd63e13d1d0aa5fb'; // Updated with your provided client-side token
+
+        // This is your Price ID from Paddle Billing.
+        const YOUR_PADDLE_PRICE_ID = 'pri_01hj3zmf49m7cc3fvbpvst4kqj';
 
         // Wait for the window to load before initializing Paddle
         window.onload = function() {
-            // Basic check to remind the user to update IDs (this check will now pass)
-            if (YOUR_PADDLE_VENDOR_ID === 0 || YOUR_PADDLE_PRODUCT_ID === 0) {
-                showMessage("Please replace 'YOUR_PADDLE_VENDOR_ID' and 'YOUR_PADDLE_PRODUCT_ID' in the script with your actual Paddle IDs for the checkout to work.", 'error');
+            // Basic check to remind the user to update IDs
+            if (YOUR_PADDLE_CLIENT_SIDE_TOKEN === 'YOUR_PADDLE_CLIENT_SIDE_TOKEN' || YOUR_PADDLE_PRICE_ID === 'pri_01hj3zmf49m7cc3fvbpvst4kqj') {
+                showMessage("Please replace 'YOUR_PADDLE_CLIENT_SIDE_TOKEN' and ensure 'YOUR_PADDLE_PRICE_ID' is correct for the checkout to work.", 'error');
                 return; // Stop execution if IDs are not set
             }
 
-            // Initialize Paddle.js
-            // IMPORTANT: Replace 'YOUR_PADDLE_VENDOR_ID' with your actual Paddle Vendor ID.
-            // You can find this in your Paddle Dashboard under 'Developer Tools' -> 'Authentication'.
-            Paddle.Setup({ vendor: YOUR_PADDLE_VENDOR_ID }); // Example: 12345
+            // Initialize Paddle.js with your Client-Side Token
+            Paddle.Setup({ token: YOUR_PADDLE_CLIENT_SIDE_TOKEN });
 
             // Get the checkout button elements
             const overlayCheckoutButton = document.getElementById('overlay-checkout-button');
             const inlineCheckoutButton = document.getElementById('inline-checkout-button');
             const inlineCheckoutContainer = document.getElementById('inline-checkout-container');
 
+            // Common checkout parameters for both overlay and inline
+            const checkoutParams = {
+                items: [
+                    {
+                        priceId: YOUR_PADDLE_PRICE_ID,
+                        quantity: 1 // You can adjust the quantity as needed
+                    }
+                ],
+                // Optional: successCallback and closeCallback for handling events
+                // successCallback: function(data) {
+                //     showMessage('Purchase successful! Thank you.', 'success');
+                //     console.log('Checkout success:', data);
+                // },
+                // closeCallback: function() {
+                //     showMessage('Checkout closed. You can try again.', 'info');
+                // }
+            };
+
             // Add a click event listener for the overlay checkout button
             overlayCheckoutButton.addEventListener('click', function() {
                 // Hide inline container if it was visible
                 inlineCheckoutContainer.classList.add('hidden');
                 // Open the Paddle checkout overlay
-                Paddle.Checkout.open({
-                    product: YOUR_PADDLE_PRODUCT_ID, // Example: 67890 (now a price ID)
-                    // successCallback: function(data) {
-                    //     showMessage('Overlay purchase successful! Thank you.', 'success');
-                    //     console.log('Overlay Checkout success:', data);
-                    // },
-                    // closeCallback: function() {
-                    //     showMessage('Overlay checkout closed. You can try again.', 'info');
-                    // }
-                });
+                Paddle.Checkout.open(checkoutParams);
             });
 
             // Add a click event listener for the inline checkout button
@@ -122,18 +132,10 @@
                 // Show the inline container
                 inlineCheckoutContainer.classList.remove('hidden');
                 // Open the Paddle inline checkout
-                Paddle.Checkout.inline('inline-checkout-container', {
-                    product: YOUR_PADDLE_PRODUCT_ID, // Example: 67890 (now a price ID)
-                    // successCallback: function(data) {
-                    //     showMessage('Inline purchase successful! Thank you.', 'success');
-                    //     console.log('Inline Checkout success:', data);
-                    // },
-                    // closeCallback: function() {
-                    //     showMessage('Inline checkout closed. You can try again.', 'info');
-                    // }
-                });
+                Paddle.Checkout.inline('inline-checkout-container', checkoutParams);
             });
         };
     </script>
 </body>
 </html>
+
