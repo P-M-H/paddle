@@ -79,13 +79,13 @@
 
         // Placeholder values for Paddle IDs - REMEMBER TO CHANGE THESE!
         // If you don't replace these, the checkout will not work.
-        const YOUR_PADDLE_VENDOR_ID = 16598; // Replace with your actual Vendor ID
-        const YOUR_PADDLE_PRODUCT_ID = pri_01hj3zmf49m7cc3fvbpvst4kqj; // Replace with your actual Product ID
+        const YOUR_PADDLE_VENDOR_ID = 16598; // Replaced with your actual Vendor ID
+        const YOUR_PADDLE_PRODUCT_ID = 'pri_01hj3zmf49m7cc3fvbpvst4kqj'; // Replaced with your actual Product ID (now a price ID)
 
         // Wait for the window to load before initializing Paddle
         window.onload = function() {
-            // Basic check to remind the user to update IDs
-            if (YOUR_PADDLE_VENDOR_ID === 16598 || YOUR_PADDLE_PRODUCT_ID === pri_01hj3zmf49m7cc3fvbpvst4kqj) {
+            // Basic check to remind the user to update IDs (this check will now pass)
+            if (YOUR_PADDLE_VENDOR_ID === 0 || YOUR_PADDLE_PRODUCT_ID === 0) {
                 showMessage("Please replace 'YOUR_PADDLE_VENDOR_ID' and 'YOUR_PADDLE_PRODUCT_ID' in the script with your actual Paddle IDs for the checkout to work.", 'error');
                 return; // Stop execution if IDs are not set
             }
@@ -106,7 +106,7 @@
                 inlineCheckoutContainer.classList.add('hidden');
                 // Open the Paddle checkout overlay
                 Paddle.Checkout.open({
-                    product: YOUR_PADDLE_PRODUCT_ID, // Example: 67890
+                    product: YOUR_PADDLE_PRODUCT_ID, // Example: 67890 (now a price ID)
                     // successCallback: function(data) {
                     //     showMessage('Overlay purchase successful! Thank you.', 'success');
                     //     console.log('Overlay Checkout success:', data);
@@ -124,7 +124,7 @@
                 inlineCheckoutContainer.classList.remove('hidden');
                 // Open the Paddle inline checkout
                 Paddle.Checkout.inline('inline-checkout-container', {
-                    product: YOUR_PADDLE_PRODUCT_ID, // Example: 67890
+                    product: YOUR_PADDLE_PRODUCT_ID, // Example: 67890 (now a price ID)
                     // successCallback: function(data) {
                     //     showMessage('Inline purchase successful! Thank you.', 'success');
                     //     console.log('Inline Checkout success:', data);
@@ -139,3 +139,4 @@
     </script>
 </body>
 </html>
+
