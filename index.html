@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paddle Checkout Example</title>
+    <!-- Placeholder favicon to prevent 404 error in console -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
     <!-- Tailwind CSS CDN for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -79,15 +81,17 @@
 
         // IMPORTANT: For Paddle Billing (v2), you should use a Client-Side Token.
         // This token is safe to expose in your client-side code.
+        // Ensure this token is generated for the correct environment (sandbox or live).
         const YOUR_PADDLE_CLIENT_SIDE_TOKEN = 'test_09f26cb8061bd63e13d1d0aa5fb';
 
         // This is your Price ID from Paddle Billing.
+        // Ensure this Price ID also belongs to the same environment (sandbox or live) as your client-side token.
         const YOUR_PADDLE_PRICE_ID = 'pri_01hj3zmf49m7cc3fvbpvst4kqj';
 
         // Wait for the window to load before initializing Paddle
         window.onload = function() {
             // Basic check to remind the user to update IDs
-            // Removed the check for YOUR_PADDLE_PRICE_ID as it's now a valid, user-provided ID.
+            // This check will now only warn if the token is still the generic placeholder.
             if (YOUR_PADDLE_CLIENT_SIDE_TOKEN === 'YOUR_PADDLE_CLIENT_SIDE_TOKEN') {
                 showMessage("Please replace 'YOUR_PADDLE_CLIENT_SIDE_TOKEN' with your actual token for the checkout to work.", 'error');
                 return; // Stop execution if token is not set
